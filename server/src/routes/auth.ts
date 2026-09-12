@@ -69,9 +69,13 @@ authRouter.get("/auth/discord/callback", async (req, res) => {
       create: { discordId: du.id, ...fields },
     });
 
-    res.cookie(COOKIE, signToken(user.id), {
+    const sessionToken = signToken(user.id);
+    console.log(
+      `[auth] setting session cookie "${COOKIE}" for user ${user.id} (httpOnly: true, secure: ${cookieSecure}, sameSite: strict)`
+    );
+    res.cookie(COOKIE, sessionToken, {
       httpOnly: true,
-      sameSite: "lax",
+      sameSite: "strict",
       secure: cookieSecure,
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
